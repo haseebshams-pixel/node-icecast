@@ -1,6 +1,6 @@
 const nodeshout = require("nodeshout-napi");
 const { FileReadStream, ShoutStream } = require("nodeshout-napi");
-
+const play = require("./shoutPlay");
 // Initalize
 nodeshout.init();
 
@@ -12,7 +12,7 @@ shout.setHost("167.99.53.97");
 shout.setPort(8000);
 shout.setUser("source");
 shout.setPassword("hackme");
-shout.setMount("mount");
+shout.setMount("cp");
 shout.setFormat(1); // 0=ogg, 1=mp3
 shout.setAudioInfo("bitrate", "192");
 shout.setAudioInfo("samplerate", "44100");
@@ -28,10 +28,18 @@ metadata.add("song", "Led Zeppelin - I can't quit you baby");
 
 // Apply metadata to shout
 shout.setMetadata(metadata);
+const playSong = (song) => {
+  return play(shout, song);
+};
 
-var fileStream = new FileReadStream("./Summer.mp3", 65536);
-var shoutStream = fileStream.pipe(new ShoutStream(shout));
+let songs = ["./song2.mp3", "./Summer.mp3", "./song3.mp3"];
 
-shoutStream.on("finish", () => {
-  console.log("finished song");
-});
+const finishSong = (index) => {
+  if (index < songs.length) {
+    return playSong(songs[index]).on("finish", () => {
+      finishSong(index + 1);
+    });
+  }
+};
+
+finishSong(0);
