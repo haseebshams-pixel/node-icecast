@@ -6,7 +6,7 @@ This repo is basic setup to stream your audio files on your own icecast radio st
 
 You will need to install these dependencies in your system globally.
 
-### `libshout`
+### `brew libshout`
 
 Libshout is a library for communicating with and sending data to an icecast server.
 
